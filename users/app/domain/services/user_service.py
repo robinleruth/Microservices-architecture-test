@@ -1,9 +1,12 @@
+import logging
 from typing import List
 
 from app.domain.model.user import User
 from app.domain.services.user_not_found_exception import UserNotFoundException
 from app.infrastructure.db.db_session import transaction_context
 from app.infrastructure.db.db_user import DbUser
+
+_logger = logging.getLogger(__name__)
 
 
 def get_all_users() -> List[User]:
@@ -23,6 +26,7 @@ def get_user_by_name(name: str) -> User:
 
 
 def create_user(name: str, pwd: str) -> User:
+    _logger.info(f'Creating user {name}')
     user = DbUser(nickname=name, password=pwd)
     with transaction_context() as session:
         session.add(user)

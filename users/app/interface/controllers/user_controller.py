@@ -3,6 +3,6 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get('/')
-def get():
+@router.get('/me')
+def me():
     return 'ok'

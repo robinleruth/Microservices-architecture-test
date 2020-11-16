@@ -5,6 +5,8 @@ assert 'APP_ENV' in os.environ, 'MAKE SURE TO SET AN ENVIRONMENT'
 
 class Config:
     PORT = 8081
+    SECRET_KEY = os.environ.get('SECRET', 'secret')
+    SQL_URI = 'sqlite:///app.db'
 
 
 class DockerConfig(Config):
@@ -12,7 +14,7 @@ class DockerConfig(Config):
 
 
 class TestConfig(Config):
-    pass
+    SQL_URI = 'sqlite:///test.db'
 
 
 env = os.environ['APP_ENV'].upper()

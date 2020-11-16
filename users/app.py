@@ -1,8 +1,5 @@
-import pdb
-
-import uvicorn
 import requests
-
+import uvicorn
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -15,7 +12,6 @@ def index():
 
 @app.get('/test_from_other_api')
 def test_from_other_api():
-    pdb.set_trace()
     r = requests.get('http://token:8080/')
     return r.json()
 

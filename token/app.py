@@ -13,7 +13,7 @@ def index():
 
 @app.get('/test_from_other_api')
 def index():
-    return requests.get('http://users/')
+    return requests.get('http://users:8080/')
 
 
 if __name__ == '__main__':

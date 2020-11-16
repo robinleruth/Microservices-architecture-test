@@ -10,10 +10,12 @@ class Config:
     SECRET_KEY = os.environ['SECRET_KEY']
     ALGORITHM = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
+    USER_SERVICE_URL = 'http://localhost:8081/api/v1/user_controller/me'
 
 
 class DockerConfig(Config):
     PORT = 8080
+    USER_SERVICE_URL = 'http://users:8081/api/v1/user_controller/me'
 
 
 class TestConfig(Config):

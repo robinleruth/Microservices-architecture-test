@@ -16,13 +16,12 @@ def get_all_users() -> List[User]:
     return users
 
 
-def get_user_by_name(name: str) -> User:
+def get_user_by_name(name: str) -> DbUser:
     with transaction_context() as session:
         user: DbUser = session.query(DbUser).filter_by(nickname=name).first()
         if user is None:
             raise UserNotFoundException(f'User not found : {name}')
-        ret = User(**user.serialize)
-    return ret
+    return user
 
 
 def create_user(name: str, pwd: str) -> User:

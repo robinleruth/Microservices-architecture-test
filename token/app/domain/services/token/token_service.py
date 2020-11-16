@@ -64,6 +64,10 @@ class TokenService:
     def _get_from_dict(self, name) -> User:
         return self.user_info_by_token[name]
 
+    def _add_to_dict(self, key, user: User):
+        key = self.PREFIX + key
+        self.user_info_by_token[self.PREFIX + key] = user
+
     def create_access_token(self, username: str, credentials: Credentials, expires_delta: Optional[timedelta] = None):
         user = self.connector.get_by_name(username, credentials)
         to_encode = {"sub": user.nickname}
@@ -73,7 +77,7 @@ class TokenService:
             expire = datetime.utcnow() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, app_config.SECRET_KEY, algorithm=app_config.ALGORITHM)
-        self.user_info_by_token[self.PREFIX + encoded_jwt] = user
+        self._add_to_dict(encoded_jwt, user)
         return encoded_jwt
 
     @staticmethod

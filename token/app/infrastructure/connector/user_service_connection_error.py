@@ -1,0 +1,2 @@
+class UserServiceConnectionError(Exception):
+    pass

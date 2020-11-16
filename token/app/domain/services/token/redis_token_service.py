@@ -6,6 +6,7 @@ from typing import Set
 import redis
 
 from app.domain.model.credentials import Credentials
+from app.domain.model.user import User
 from app.domain.services.token.token_service import TokenService
 
 
@@ -33,3 +34,7 @@ class RedisTokenService(TokenService):
         for d in self.keys:
             pass
             # self.user_info_by_token[d] = self._get_from_connector(d)
+
+    def _add_to_dict(self, key, user: User):
+        key = self.PREFIX + key
+        self.user_info_by_token[self.PREFIX + key] = pickle.dumps(user)

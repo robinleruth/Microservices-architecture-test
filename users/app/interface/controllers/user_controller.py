@@ -37,7 +37,8 @@ def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
                 'WWW-Authenticate': 'Basic'
             }
         )
-    return user
+    ret = User(**user.serialize)
+    return ret
 
 
 @router.get('/me')

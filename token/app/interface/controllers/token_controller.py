@@ -13,6 +13,7 @@ from app.domain.model.user_not_found import UserNotFound
 from app.domain.services.token.bean import get_token_service
 from app.domain.services.token.token_service import TokenService
 from app.infrastructure.config import app_config
+from app.infrastructure.connector.user_service_connection_error import UserServiceConnectionError
 
 router = APIRouter()
 
@@ -33,7 +34,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     # user = get_user(fake_users_db, username=token_data.username)
     try:
         user = token_service.get_by_token(token)
-    except UserNotFound as e:
+    except UserServiceConnectionError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"User not found {token_data.username}",

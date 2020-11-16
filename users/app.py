@@ -1,3 +1,5 @@
+import pdb
+
 import uvicorn
 import requests
 
@@ -13,8 +15,10 @@ def index():
 
 @app.get('/test_from_other_api')
 def test_from_other_api():
-    return requests.get('http://token:8080/')
+    pdb.set_trace()
+    r = requests.get('http://token:8080/')
+    return r.json()
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, port=8080, host='0.0.0.0')
+    uvicorn.run(app, port=8080)

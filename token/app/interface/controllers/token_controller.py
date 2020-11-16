@@ -34,7 +34,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     # user = get_user(fake_users_db, username=token_data.username)
     try:
         user = token_service.get_by_token(token)
-    except UserServiceConnectionError as e:
+    except (UserNotFound, UserServiceConnectionError) as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"User not found {token_data.username}",
@@ -58,7 +58,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     try:
         access_token = token_service.create_access_token(form_data.username, credentials=credentials,
                                                          expires_delta=access_token_expires)
-    except UserNotFound:
+    except (UserNotFound, UserServiceConnectionError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

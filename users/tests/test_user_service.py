@@ -1,12 +1,14 @@
 import os
 
+from app.domain.model.user import User
+
 os.environ['APP_ENV'] = 'test'
 import unittest
 from typing import List
 from app.domain.services.user_not_found_exception import UserNotFoundException
 from app.domain.services import user_service, password_service
 from app.infrastructure.db import Base, engine
-from app.infrastructure.db.user import User
+from app.infrastructure.db.db_user import DbUser
 from app.infrastructure.db.db_session import transaction_context
 
 
@@ -14,7 +16,7 @@ class TestUserService(unittest.TestCase):
     def setUp(self):
         Base.metadata.create_all(bind=engine)
         self.password = 'test'
-        user = User(nickname='Robin', password=self.password)
+        user = DbUser(nickname='Robin', password=self.password)
         with transaction_context() as session:
             session.add(user)
 
@@ -30,6 +32,11 @@ class TestUserService(unittest.TestCase):
         self.assertTrue(user is not None)
         hash = user.password_hash
         self.assertTrue(password_service.verify_password('test', hash))
+
+    def test_create_user(self):
+        user = user_service.create_user('Nom', 'test_pwd')
+        self.assertTrue(user is not None)
+        self.assertEqual('Nom', user.nickname)
 
     def test_user_is_none(self):
         self.assertRaises(UserNotFoundException, user_service.get_user_by_name, 'Test')

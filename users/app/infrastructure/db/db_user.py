@@ -5,7 +5,7 @@ from app.domain.services import password_service
 from app.infrastructure.db import Base
 
 
-class User(Base):
+class DbUser(Base):
     __tablename__ = 'User'
 
     id = Column(Integer, primary_key=True)
@@ -27,3 +27,15 @@ class User(Base):
     def ping(self):
         self.last_seen_at = func.now()
         self.online = True
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'last_seen_at': self.last_seen_at,
+            'nickname': self.nickname,
+            'password_hash': self.password_hash,
+            'online': self.online
+        }

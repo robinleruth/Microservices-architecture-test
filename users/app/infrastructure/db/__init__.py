@@ -16,5 +16,5 @@ Session = scoped_session(sessionmaker(bind=engine,
                                       autoflush=True))
 
 # from .log import Log
-from .user import User
+from .db_user import DbUser
 Base.metadata.create_all(engine)

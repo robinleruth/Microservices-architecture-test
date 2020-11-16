@@ -3,9 +3,9 @@ FROM python:3.7-alpine
 RUN apk add --no-cache gcc musl-dev make build-base
 RUN apk add build-base libtool automake
 
-RUN adduser -D users
+RUN adduser -D userService
 
-WORKDIR /home/users
+WORKDIR /home/userService
 
 COPY requirements.txt requirements.txt
 
@@ -20,8 +20,8 @@ COPY app.py run_app.sh ./
 
 RUN chmod +x run_app.sh
 
-RUN chown -R users:users ./
-USER users
+RUN chown -R userService:userService ./
+USER userService
 EXPOSE 8080
 
 ENTRYPOINT ["./run_app.sh"]

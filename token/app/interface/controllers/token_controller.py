@@ -44,8 +44,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     return user
 
 
-@router.get('/me')
-async def get(user: User = Depends(get_current_user)):
+@router.get('/tokenInfo')
+async def token_info(user: User = Depends(get_current_user)):
     return asdict(user)
 
 

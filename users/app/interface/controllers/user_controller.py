@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -50,3 +50,9 @@ async def me(user: Dict[str, Any] = Depends(get_current_username)):
 async def add_one(user: UserIn):
     user: User = user_service.create_user(user.name, user.password)
     return asdict(user)
+
+
+@router.get('/getAll')
+async def get_all():
+    users: List[User] = user_service.get_all_users()
+    return list(map(lambda x: asdict(x), users))

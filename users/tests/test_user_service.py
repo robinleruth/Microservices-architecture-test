@@ -3,6 +3,7 @@ import os
 os.environ['APP_ENV'] = 'test'
 import unittest
 from typing import List
+from app.domain.services.user_not_found_exception import UserNotFoundException
 from app.domain.services import user_service, password_service
 from app.infrastructure.db import Base, engine
 from app.infrastructure.db.user import User
@@ -29,6 +30,9 @@ class TestUserService(unittest.TestCase):
         self.assertTrue(user is not None)
         hash = user.password_hash
         self.assertTrue(password_service.verify_password('test', hash))
+
+    def test_user_is_none(self):
+        self.assertRaises(UserNotFoundException, user_service.get_user_by_name, 'Test')
 
 
 if __name__ == '__main__':

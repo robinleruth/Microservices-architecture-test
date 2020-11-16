@@ -12,7 +12,7 @@ def index():
 
 
 @app.get('/test_from_other_api')
-def index():
+def test_from_other_api():
     return requests.get('http://token:8080/')
 
 

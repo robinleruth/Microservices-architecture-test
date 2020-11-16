@@ -14,7 +14,7 @@ RUN venv/bin/python -m pip install --upgrade pip
 RUN venv/bin/pip install wheel
 RUN venv/bin/pip install -r requirements.txt
 
-# COPY app app
+COPY app app
 # COPY tests tests
 COPY app.py run_app.sh ./
 

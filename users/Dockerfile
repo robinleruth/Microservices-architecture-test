@@ -15,7 +15,7 @@ RUN venv/bin/pip install wheel
 RUN venv/bin/pip install -r requirements.txt
 
 COPY app app
-# COPY tests tests
+COPY tests tests
 COPY app.py run_app.sh ./
 
 RUN chmod +x run_app.sh

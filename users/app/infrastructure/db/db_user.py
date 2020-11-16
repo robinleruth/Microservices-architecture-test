@@ -36,6 +36,5 @@ class DbUser(Base):
             'updated_at': self.updated_at,
             'last_seen_at': self.last_seen_at,
             'nickname': self.nickname,
-            'password_hash': self.password_hash,
             'online': self.online
         }

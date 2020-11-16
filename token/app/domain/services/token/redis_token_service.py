@@ -31,4 +31,5 @@ class RedisTokenService(TokenService):
     def _refresh_cache(self):
         # TODO: upgdate key when ttl < 0
         for d in self.keys:
-            self.user_info_by_token[d] = self._get_from_connector(d)
+            pass
+            # self.user_info_by_token[d] = self._get_from_connector(d)

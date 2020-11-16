@@ -15,7 +15,7 @@ class Config:
 
 class DockerConfig(Config):
     PORT = 8080
-    USER_SERVICE_URL = 'http://users:8081/api/v1/user_controller/me'
+    USER_SERVICE_URL = 'http://users:8080/api/v1/user_controller/me'
 
 
 class TestConfig(Config):

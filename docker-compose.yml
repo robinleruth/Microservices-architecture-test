@@ -5,6 +5,8 @@ services:
     build: token/
     ports:
     - "8082:8080"
+    depends_on:
+        - "redis"
 
   users:
     build: users/

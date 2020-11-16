@@ -27,7 +27,7 @@ class TokenService:
 
     PREFIX = ''
 
-    # TODO: Check if present | Check if ttl > 0 | refresh every minute
+    # TODO: revoke token
 
     def __post_init__(self):
         logger.info('Init Token Service')

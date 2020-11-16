@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class ApiUserConnector(UserConnector):
     def get_by_name(self, name: str, credentials: Credentials) -> User:
         logger.info(f'GET {app_config.USER_SERVICE_URL}')
+        # TODO: aiohttp
         r = requests.get(app_config.USER_SERVICE_URL, auth=(credentials.username, credentials.password))
         if r.status_code != 200:
             raise UserServiceConnectionError(f'Status code {r.status_code} for GET {app_config.USER_SERVICE_URL}')

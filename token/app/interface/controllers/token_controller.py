@@ -31,7 +31,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     except JWTError:
         raise credentials_exception
     # user = get_user(fake_users_db, username=token_data.username)
-    user = token_service.get_by_token(token)
+    try:
+        user = token_service.get_by_token(token)
+    except UserNotFound as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"User not found {token_data.username}",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     # if user is None:
     #     raise credentials_exception
     return user

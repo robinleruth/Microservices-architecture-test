@@ -1,3 +1,4 @@
+import logging
 from dataclasses import asdict
 from datetime import timedelta
 
@@ -19,19 +20,19 @@ router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+logger = logging.getLogger(__name__)
+
 
 async def get_current_user(token: str = Depends(oauth2_scheme),
                            token_service: TokenService = Depends(get_token_service)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         token_data = token_service.decode_token(token)
     except JWTError:
-        raise credentials_exception
-    # user = get_user(fake_users_db, username=token_data.username)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     try:
         user = token_service.get_by_token(token)
     except (UserNotFound, UserServiceConnectionError) as e:
@@ -40,8 +41,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
             detail=f"User not found {token_data.username}",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    # if user is None:
-    #     raise credentials_exception
     return user
 
 
@@ -54,6 +53,7 @@ async def get(user: User = Depends(get_current_user)):
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                                  token_service: TokenService = Depends(get_token_service)):
     credentials: Credentials = Credentials(form_data.username, form_data.password)
+    logger.info(f'Creating token for {form_data.username}')
     access_token_expires = timedelta(minutes=app_config.ACCESS_TOKEN_EXPIRE_MINUTES)
     try:
         access_token = token_service.create_access_token(form_data.username, credentials=credentials,

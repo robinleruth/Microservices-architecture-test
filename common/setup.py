@@ -1,11 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='tcommon',
     version='1.0',
     description='Functions that will need to be used by different services',
     author='Robin',
-    packages=["tcommon"],
+    packages=find_packages(),
     install_requires=[
         'fastapi',
         'requests'

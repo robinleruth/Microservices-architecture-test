@@ -59,7 +59,7 @@ async def token_info(user: User = Depends(get_current_user)):
     return asdict(user)
 
 
-# TODO: change to BASIC auth
+
 @router.post("/token", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                                  token_service: TokenService = Depends(get_token_service)):

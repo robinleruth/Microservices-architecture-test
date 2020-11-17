@@ -31,4 +31,4 @@ class TestUserInfo(unittest.TestCase):
         import requests
         requests.get = MagicMock(return_value=response)
         user = get_user_info_by_token('aa')
-        self.assertEqual('Robin', user['nickname'])
+        self.assertEqual('Robin', user.nickname)

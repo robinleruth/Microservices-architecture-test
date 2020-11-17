@@ -3,7 +3,7 @@ from typing import List
 
 from fastapi import Security, HTTPException
 from fastapi.openapi.models import OAuthFlows, OAuthFlowImplicit
-from fastapi.security import OAuth2
+from fastapi.security import OAuth2, SecurityScopes
 from starlette import status
 
 from tcommon.authenticate_token import get_user_info_by_token, UnauthorizedException
@@ -21,7 +21,7 @@ class OauthImplem:
                                        scopes=self.scopes)))
 
     def get_user_implicit(self):
-        def inner(token: str = Security(self.oauth2_scheme)):
+        def inner(security_scopes: SecurityScopes, token: str = Security(self.oauth2_scheme)):
             try:
                 token = token.split('Bearer ')[1]
             except:
@@ -32,6 +32,9 @@ class OauthImplem:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f'Error authorizing {str(e)}')
             except Exception as e:
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Could not authenticate')
+            if not user.has_scopes(security_scopes.scopes):
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                    detail=f'User {user.nickname} is not allowed for scope {" ".join(user.scopes_not_allowed)}')
             return user
 
         return inner

@@ -29,7 +29,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
         token_data = token_service.decode_token(token)
     except JWTError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )

@@ -58,5 +58,6 @@ async def add_one(user: UserIn):
 
 @router.get('/getAll')
 async def get_all(user_auth=Depends(get_user_implicit)):
+    # TODO: create a dependency to check scopes. In common library might be better
     users: List[User] = user_service.get_all_users()
     return list(map(lambda x: asdict(x), users))

@@ -106,7 +106,6 @@ async def signin(username: str = Form(...), password: str = Form(...), client_id
             detail="Client id unknown",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    # TODO: handle scope
     credentials: Credentials = Credentials(username, password)
     logger.info(f'Creating token for {username}')
     access_token_expires = timedelta(minutes=app_config.ACCESS_TOKEN_EXPIRE_MINUTES)

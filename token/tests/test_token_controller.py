@@ -43,7 +43,7 @@ class TestTokenController(unittest.TestCase):
         token = 'footokenbar'
         response = self.client.get('/api/v1/token_controller/tokenInfo',
                                    headers={"Authorization": f"Bearer {token}"})
-        self.assertEqual(401, response.status_code)
+        self.assertEqual(403, response.status_code)
         token = self.token_service.create_access_token('Robin', Credentials('Robin', 'aaa'))
         response = self.client.get('/api/v1/token_controller/tokenInfo',
                                    headers={"Authorization": f"Bearer {token}"})

@@ -6,7 +6,7 @@ from app.infrastructure.db import Base
 
 
 class DbUser(Base):
-    __tablename__ = 'User'
+    __tablename__ = 't_users'
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=func.now())

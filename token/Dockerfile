@@ -1,6 +1,6 @@
 FROM python:3.7-alpine
 
-RUN apk add --no-cache gcc musl-dev make build-base libffi-dev openssl-dev
+RUN apk add --no-cache gcc musl-dev make build-base libffi-dev openssl-dev postgresql-dev
 RUN apk add build-base libtool automake
 
 RUN adduser -D token

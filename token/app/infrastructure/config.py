@@ -11,15 +11,19 @@ class Config:
     ALGORITHM = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     USER_SERVICE_URL = 'http://localhost:8081/api/v1/user_controller/me'
+    SQL_URI = 'sqlite:///app.db'
+    ADMIN_USER = os.environ.get('ADMIN_USER', 'admin')
+    ADMIN_PWD = os.environ.get('ADMIN_PWD', 'admin')
 
 
 class DockerConfig(Config):
     PORT = 8080
     USER_SERVICE_URL = 'http://users:8080/api/v1/user_controller/me'
+    SQL_URI = 'postgresql+psycopg2://user:password@database/database'
 
 
 class TestConfig(Config):
-    pass
+    SQL_URI = 'sqlite:///temp.db'
 
 
 env = os.environ['APP_ENV'].upper()

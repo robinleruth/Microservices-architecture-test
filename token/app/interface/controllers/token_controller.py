@@ -17,6 +17,7 @@ from app.domain.model.credentials import Credentials
 from app.domain.model.token import Token
 from app.domain.model.user import User
 from app.domain.model.user_not_found import UserNotFound
+from app.domain.services.client_id import client_id_service
 from app.domain.services.token.bean import get_token_service
 from app.domain.services.token.token_service import TokenService
 from app.infrastructure.config import app_config
@@ -87,7 +88,13 @@ async def auth(request: Request, client_id: str, redirect_uri: str, scope: str, 
 @router.post('/signin')
 async def signin(username: str = Form(...), password: str = Form(...), client_id: str = Form(...),
                  redirect_uri: str = Form(...), token_service: TokenService = Depends(get_token_service)):
-    # TODO: Client ID storage to make sure it has right
+    if not client_id_service.client_id_present_in_db(client_id):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Client id unknown",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # TODO: handle scope
     credentials: Credentials = Credentials(username, password)
     logger.info(f'Creating token for {username}')
     access_token_expires = timedelta(minutes=app_config.ACCESS_TOKEN_EXPIRE_MINUTES)

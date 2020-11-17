@@ -11,6 +11,11 @@ api.include_router(token_controller.router,
                    prefix='/api/v1/token_controller',
                    tags=['token_controller'])
 
+from .controllers import client_id_controller
+api.include_router(client_id_controller.router,
+                   prefix='/api/v1/client_id_controller',
+                   tags=['client_id_controller'])
+
 api.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],

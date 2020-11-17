@@ -7,6 +7,7 @@ class Config:
     TOKEN_SERVICE_URL = 'http://localhost:8082/api/v1/token_controller/'
     TOKEN_CREATION = 'token'
     TOKEN_INFO = 'tokenInfo'
+    CLIENT_ID = 'my_client_id'
 
 
 class DockerConfig(Config):

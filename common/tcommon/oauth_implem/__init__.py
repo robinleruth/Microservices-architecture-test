@@ -1,3 +1,5 @@
+# TODO: Authorization code and client credentials implem
+
 from fastapi import Security, HTTPException
 from fastapi.openapi.models import OAuthFlows, OAuthFlowImplicit
 from fastapi.security import OAuth2

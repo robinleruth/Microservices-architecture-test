@@ -12,6 +12,8 @@ COPY requirements.txt requirements.txt
 RUN python -m venv venv
 RUN venv/bin/python -m pip install --upgrade pip
 RUN venv/bin/pip install wheel
+COPY dist dist
+RUN venv/bin/pip install --find-links dist tcommon
 RUN venv/bin/pip install -r requirements.txt
 
 COPY app app

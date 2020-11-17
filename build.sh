@@ -2,4 +2,6 @@
 
 pip install wheel
 
-python common/setup.py bdist_wheel
+python3 common/setup.py bdist_wheel
+
+cp -r dist users/dist

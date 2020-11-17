@@ -30,10 +30,10 @@ class RedisTokenService(TokenService):
         return pickle.loads(self.user_info_by_token[key])
 
     def _refresh_cache(self):
-        # TODO: upgdate key when ttl < 0
-        for d in self.keys:
-            pass
-            # self.user_info_by_token[d] = self._get_from_connector(d)
+        for token in self.keys:
+            if self._is_token_expired(token):
+                self.keys.remove(token)
+                self.user_info_by_token.delete(token)
 
     def _add_to_dict(self, key, user: User):
         key = self.PREFIX + key

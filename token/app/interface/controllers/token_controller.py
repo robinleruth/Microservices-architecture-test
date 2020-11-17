@@ -14,6 +14,7 @@ from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from app.domain.model.credentials import Credentials
+from app.domain.model.scope_not_allowed import ScopeNotAllowedException
 from app.domain.model.token import Token
 from app.domain.model.user import User
 from app.domain.model.user_not_found import UserNotFound
@@ -87,6 +88,12 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    except ScopeNotAllowedException as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -116,6 +123,12 @@ async def signin(username: str = Form(...), password: str = Form(...), client_id
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except ScopeNotAllowedException as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=str(e),
             headers={"WWW-Authenticate": "Bearer"},
         )
     # return {"access_token": access_token, "token_type": "bearer"}

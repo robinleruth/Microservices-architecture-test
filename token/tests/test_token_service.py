@@ -54,6 +54,14 @@ class TestTokenService(unittest.TestCase):
         self.service._refresh_cache()
         self.assertRaises(TokenNotFound, self.service.get_by_token, token)
 
+    def test_user_has_scope_fail(self):
+        user = User(nickname='R', scopes_allowed=['a', 'b'])
+        self.assertTrue(user.has_scopes(['a']))
+
+    def test_user_has_scope_succeed(self):
+        user = User(nickname='R', scopes_allowed=['a', 'b'])
+        self.assertFalse(user.has_scopes(['a', 'c']))
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

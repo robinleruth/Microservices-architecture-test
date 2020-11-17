@@ -17,7 +17,7 @@ from app.domain.services.token.bean import get_token_service
 class TestTokenController(unittest.TestCase):
     def setUp(self):
         connector = MagicMock()
-        connector.get_by_name = MagicMock(return_value=User(nickname='Robin'))
+        connector.get_by_name = MagicMock(return_value=User(nickname='Robin', scopes_allowed=['me']))
         self.token_service = TokenService(connector)
         self.client = TestClient(api)
 

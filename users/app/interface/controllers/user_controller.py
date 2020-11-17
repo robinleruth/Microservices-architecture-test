@@ -2,14 +2,15 @@ import logging
 from dataclasses import asdict
 from typing import Dict, Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from starlette import status
-from tcommon.oauth_implem import get_user_implicit
+from tcommon.oauth_implem import OauthImplem
 
 from app.domain.model.user import User
 from app.domain.services import user_service, password_service
 from app.domain.services.user_not_found_exception import UserNotFoundException
+from app.infrastructure.config import app_config
 from app.interface.schemas.user import UserIn
 
 router = APIRouter()
@@ -17,6 +18,8 @@ router = APIRouter()
 security = HTTPBasic()
 
 logger = logging.getLogger(__name__)
+
+oauth_implem = OauthImplem(scopes=app_config.SCOPES)
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
@@ -57,7 +60,7 @@ async def add_one(user: UserIn):
 
 
 @router.get('/getAll')
-async def get_all(user_auth=Depends(get_user_implicit)):
+async def get_all(user_auth=Security(oauth_implem.get_user_implicit(), scopes=['all'])):
     # TODO: create a dependency to check scopes. In common library might be better
     users: List[User] = user_service.get_all_users()
     return list(map(lambda x: asdict(x), users))

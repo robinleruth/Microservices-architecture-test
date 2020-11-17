@@ -9,6 +9,7 @@ from typing import Dict, Optional, List
 from jose import jwt, ExpiredSignatureError
 
 from app.domain.model.credentials import Credentials
+from app.domain.model.scope_not_allowed import ScopeNotAllowedException
 from app.domain.model.token_data import TokenData
 from app.domain.model.token_not_found import TokenNotFound
 from app.domain.model.user import User
@@ -77,6 +78,8 @@ class TokenService:
     def create_access_token(self, username: str, credentials: Credentials, expires_delta: Optional[timedelta] = None,
                             scopes: List[str] = None):
         user = self.connector.get_by_name(username, credentials)
+        if scopes and not user.has_scopes(scopes):
+            raise ScopeNotAllowedException(f'User {user.nickname} is not allowed for scope {" ".join(user.scopes_not_allowed)}')
         to_encode = {"sub": user.nickname, "scopes": scopes if scopes else []}
         if expires_delta:
             expire = datetime.utcnow() + expires_delta

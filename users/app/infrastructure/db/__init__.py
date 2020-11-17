@@ -9,8 +9,7 @@ from app.infrastructure.config import app_config
 Base = declarative_base()
 
 # pool_pre_ping=True as argument if needed
-engine = create_engine(app_config.SQL_URI,
-                       connect_args={'check_same_thread': False})
+engine = create_engine(app_config.SQL_URI)
 Session = scoped_session(sessionmaker(bind=engine,
                                       autocommit=False,
                                       autoflush=True))

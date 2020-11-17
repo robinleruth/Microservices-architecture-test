@@ -17,7 +17,6 @@ class OauthImplem:
         self.scopes = scopes
         self.oauth2_scheme: OAuth2 = OAuth2(flows=OAuthFlows(
             implicit=OAuthFlowImplicit(authorizationUrl=url + f'?client_id={app_config.CLIENT_ID}',
-                                       # TODO: get Scopes from app_config of real service
                                        scopes=self.scopes)))
 
     def get_user_implicit(self):

@@ -10,7 +10,7 @@ class Config:
     TOKEN_INFO = 'tokenInfo'
     CLIENT_ID = 'my_client_id'
     SCOPES = {
-        'test': 'test'
+        "me": "Read information about the current user."
     }
 
 

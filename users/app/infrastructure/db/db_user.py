@@ -15,6 +15,7 @@ class DbUser(Base):
     nickname = Column(String(32), nullable=False, unique=True)
     password_hash = Column(String(256), nullable=False)
     online = Column(Boolean, default=False)
+    scopes = Column(String)
 
     @property
     def password(self):
@@ -36,5 +37,6 @@ class DbUser(Base):
             'updated_at': self.updated_at,
             'last_seen_at': self.last_seen_at,
             'nickname': self.nickname,
-            'online': self.online
+            'online': self.online,
+            'scopes': self.scopes
         }

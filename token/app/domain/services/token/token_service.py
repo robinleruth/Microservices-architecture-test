@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from datetime import timedelta, datetime
 from threading import Thread
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from jose import jwt, ExpiredSignatureError
 
@@ -74,9 +74,10 @@ class TokenService:
         key = self.PREFIX + key
         self.user_info_by_token[self.PREFIX + key] = user
 
-    def create_access_token(self, username: str, credentials: Credentials, expires_delta: Optional[timedelta] = None):
+    def create_access_token(self, username: str, credentials: Credentials, expires_delta: Optional[timedelta] = None,
+                            scopes: List[str] = None):
         user = self.connector.get_by_name(username, credentials)
-        to_encode = {"sub": user.nickname}
+        to_encode = {"sub": user.nickname, "scopes": scopes if scopes else []}
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
@@ -92,5 +93,6 @@ class TokenService:
         username: str = payload.get("sub")
         if username is None:
             raise Exception('No subject found in token')
-        token_data = TokenData(username=username)
+        scopes = payload.get('scopes', [])
+        token_data = TokenData(username=username, scopes=scopes)
         return token_data

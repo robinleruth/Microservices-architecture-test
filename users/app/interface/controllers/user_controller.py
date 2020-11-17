@@ -52,7 +52,7 @@ async def me(user: Dict[str, Any] = Depends(get_current_username)):
 
 @router.post('/addOne')
 async def add_one(user: UserIn):
-    user: User = user_service.create_user(user.name, user.password)
+    user: User = user_service.create_user(user.name, user.password, user.scopes)
     return asdict(user)
 
 

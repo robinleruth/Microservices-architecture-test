@@ -5,7 +5,7 @@ import unittest
 from typing import List
 from app.domain.services.user_not_found_exception import UserNotFoundException
 from app.domain.model.user import User
-from app.domain.services import user_service, password_service
+from app.domain.services import user_service
 from app.infrastructure.db import Base, engine
 from app.infrastructure.db.db_user import DbUser
 from app.infrastructure.db.db_session import transaction_context
@@ -15,7 +15,7 @@ class TestUserService(unittest.TestCase):
     def setUp(self):
         Base.metadata.create_all(bind=engine)
         self.password = 'test'
-        user = DbUser(nickname='Robin', password=self.password)
+        user = DbUser(nickname='Robin', password=self.password, scopes="a b c")
         with transaction_context() as session:
             session.add(user)
 
@@ -25,6 +25,7 @@ class TestUserService(unittest.TestCase):
     def test_get_all(self):
         lst: List[User] = user_service.get_all_users()
         self.assertTrue(len(lst) == 1)
+        print(lst[0])
 
     def test_pwd_hash(self):
         # user = user_service.get_user_by_name('Robin')

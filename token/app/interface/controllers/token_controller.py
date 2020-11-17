@@ -5,8 +5,8 @@ from dataclasses import asdict
 from datetime import timedelta
 from urllib.parse import urlencode
 
-from fastapi import APIRouter, Depends, HTTPException, Form
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import APIRouter, Depends, HTTPException, Form, Security
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, SecurityScopes
 from jose import JWTError
 from starlette import status
 from starlette.requests import Request
@@ -25,7 +25,8 @@ from app.infrastructure.connector.user_service_connection_error import UserServi
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token_controller/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token_controller/token",
+                                     scopes={"me": "Read information about the current user."})
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 os.path.join(basedir, 'templates')
@@ -34,8 +35,12 @@ templates = Jinja2Templates(directory=os.path.join(basedir, 'templates'))
 logger = logging.getLogger(__name__)
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme),
+async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme),
                            token_service: TokenService = Depends(get_token_service)):
+    if security_scopes.scopes:
+        authenticate_value = f'Bearer scope="{security_scopes.scope_str}"'
+    else:
+        authenticate_value = f"Bearer"
     try:
         token_data = token_service.decode_token(token)
     except JWTError:
@@ -44,6 +49,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    for scope in security_scopes.scopes:
+        if scope not in token_data.scopes:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions",
+                headers={"WWW-Authenticate": authenticate_value},
+            )
     try:
         user = token_service.get_by_token(token)
     except (UserNotFound, UserServiceConnectionError) as e:
@@ -56,9 +68,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
 
 
 @router.get('/tokenInfo')
-async def token_info(user: User = Depends(get_current_user)):
+async def token_info(user: User = Security(get_current_user, scopes=['me'])):
     return asdict(user)
-
 
 
 @router.post("/token", response_model=Token, status_code=status.HTTP_201_CREATED)
@@ -69,7 +80,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token_expires = timedelta(minutes=app_config.ACCESS_TOKEN_EXPIRE_MINUTES)
     try:
         access_token = token_service.create_access_token(form_data.username, credentials=credentials,
-                                                         expires_delta=access_token_expires)
+                                                         expires_delta=access_token_expires, scopes=form_data.scopes)
     except (UserNotFound, UserServiceConnectionError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,12 +93,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @router.get('/auth', response_class=HTMLResponse)
 async def auth(request: Request, client_id: str, redirect_uri: str, scope: str, state: str, response_type: str):
     return templates.TemplateResponse("auth.html", {"request": request, "client_id": client_id,
-                                                    "redirect_uri": redirect_uri})
+                                                    "redirect_uri": redirect_uri, "scopes": scope})
 
 
 @router.post('/signin')
 async def signin(username: str = Form(...), password: str = Form(...), client_id: str = Form(...),
-                 redirect_uri: str = Form(...), token_service: TokenService = Depends(get_token_service)):
+                 redirect_uri: str = Form(...), scopes: str = Form(...),
+                 token_service: TokenService = Depends(get_token_service)):
     if not client_id_service.client_id_present_in_db(client_id):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -100,7 +112,7 @@ async def signin(username: str = Form(...), password: str = Form(...), client_id
     access_token_expires = timedelta(minutes=app_config.ACCESS_TOKEN_EXPIRE_MINUTES)
     try:
         access_token = token_service.create_access_token(username, credentials=credentials,
-                                                         expires_delta=access_token_expires)
+                                                         expires_delta=access_token_expires, scopes=scopes.split(' '))
     except (UserNotFound, UserServiceConnectionError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

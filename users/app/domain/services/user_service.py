@@ -24,12 +24,11 @@ def get_user_by_name(name: str) -> DbUser:
     return user
 
 
-def create_user(name: str, pwd: str) -> User:
+def create_user(name: str, pwd: str, scopes: List[str] = None) -> User:
     _logger.info(f'Creating user {name}')
-    user = DbUser(nickname=name, password=pwd)
+    user = DbUser(nickname=name, password=pwd, scopes=' '.join(scopes) if scopes else '')
     with transaction_context() as session:
         session.add(user)
         session.commit()
         ret = User(**user.serialize)
     return ret
-

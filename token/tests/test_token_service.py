@@ -2,21 +2,18 @@ import os
 
 os.environ['APP_ENV'] = 'test'
 os.environ['SECRET_KEY'] = 'secret'
+import time
 import unittest
 from unittest.mock import MagicMock
+from datetime import timedelta
 
 from app.domain.model.credentials import Credentials
+from app.domain.model.token_not_found import TokenNotFound
 from app.domain.model.user import User
 from app.domain.services.token.token_service import TokenService
 
 
 class TestTokenService(unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def test_service(self):
         connector = MagicMock()
         connector.get_by_name = MagicMock(return_value=User(nickname='Robin'))
@@ -41,6 +38,21 @@ class TestTokenService(unittest.TestCase):
         token = self.service.create_access_token('Robin', Credentials('a', 'b'))
         user = self.service.get_by_token(token)
         self.assertEqual('Robin', user.nickname)
+
+    def test_cache_refresh(self):
+        connector = MagicMock()
+        connector.get_by_name = MagicMock(return_value=User(nickname='Robin'))
+        self.service = TokenService(connector)
+        token = self.service.create_access_token('Robin', Credentials('a', 'b'), timedelta(seconds=2))
+        user = self.service.get_by_token(token)
+        self.assertEqual('Robin', user.nickname)
+        time.sleep(1)
+        self.service._refresh_cache()
+        user = self.service.get_by_token(token)
+        self.assertEqual('Robin', user.nickname)
+        time.sleep(2)
+        self.service._refresh_cache()
+        self.assertRaises(TokenNotFound, self.service.get_by_token, token)
 
 
 if __name__ == '__main__':

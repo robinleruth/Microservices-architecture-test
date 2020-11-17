@@ -6,7 +6,7 @@ from datetime import timedelta, datetime
 from threading import Thread
 from typing import Dict, Optional
 
-from jose import jwt
+from jose import jwt, ExpiredSignatureError
 
 from app.domain.model.credentials import Credentials
 from app.domain.model.token_data import TokenData
@@ -53,10 +53,18 @@ class TokenService:
             self._refresh_cache()
             time.sleep(60)
 
+    @staticmethod
+    def _is_token_expired(token):
+        try:
+            jwt.decode(token, app_config.SECRET_KEY, algorithms=[app_config.ALGORITHM])
+        except ExpiredSignatureError:
+            return True
+        return False
+
     def _refresh_cache(self):
-        for token in self.user_info_by_token:
-            pass
-            # self.user_info_by_token[token] = self._get_from_connector(token)
+        self.user_info_by_token = {
+            k: v for k, v in self.user_info_by_token.items() if not self._is_token_expired(k)
+        }
 
     def _get_from_connector(self, name: str, credentials: Credentials) -> User:
         return self.connector.get_by_name(name, credentials)

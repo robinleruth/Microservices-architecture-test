@@ -14,6 +14,9 @@ class Config:
     SQL_URI = 'sqlite:///app.db'
     ADMIN_USER = os.environ.get('ADMIN_USER', 'admin')
     ADMIN_PWD = os.environ.get('ADMIN_PWD', 'admin')
+    SCOPES = {
+        "me": "Read information about the current user."
+    }
 
 
 class DockerConfig(Config):

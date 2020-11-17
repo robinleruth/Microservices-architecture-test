@@ -26,7 +26,7 @@ from app.infrastructure.connector.user_service_connection_error import UserServi
 router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token_controller/token",
-                                     scopes={"me": "Read information about the current user."})
+                                     scopes=app_config.SCOPES)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 os.path.join(basedir, 'templates')

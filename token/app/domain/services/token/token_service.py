@@ -27,8 +27,6 @@ class TokenService:
 
     PREFIX = ''
 
-    # TODO: revoke token
-
     def __post_init__(self):
         logger.info('Init Token Service')
         if app_config is not TestConfig:

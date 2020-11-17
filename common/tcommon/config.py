@@ -15,7 +15,7 @@ class Config:
 
 
 class DockerConfig(Config):
-    TOKEN_SERVICE_URL = 'http://192.168.33.10:8080/api/v1/token_controller/'
+    TOKEN_SERVICE_URL = 'http://192.168.33.10:8082/api/v1/token_controller/'
 
 
 class TestConfig(Config):

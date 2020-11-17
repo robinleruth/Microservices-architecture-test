@@ -48,6 +48,7 @@ class TestTokenController(unittest.TestCase):
         response = self.client.get('/api/v1/token_controller/tokenInfo',
                                    headers={"Authorization": f"Bearer {token}"})
         self.assertEqual(200, response.status_code)
+        self.assertEqual('Robin', response.json()['nickname'])
 
 
 if __name__ == '__main__':

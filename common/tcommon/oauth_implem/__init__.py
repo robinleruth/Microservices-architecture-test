@@ -11,6 +11,7 @@ from tcommon.config import app_config
 url = app_config.TOKEN_SERVICE_URL + app_config.SIGN_IN_PAGE
 oauth2_scheme: OAuth2 = OAuth2(flows=OAuthFlows(
     implicit=OAuthFlowImplicit(authorizationUrl=url + f'?client_id={app_config.CLIENT_ID}',
+                               # TODO: get Scopes from app_config of real service
                                scopes=app_config.SCOPES)))
 
 

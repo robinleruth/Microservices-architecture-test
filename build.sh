@@ -1,7 +1,10 @@
 #!/bin/bash
 
+pushd .
+cd common
 pip install wheel
 
-python3 common/setup.py bdist_wheel
+python3 setup.py bdist_wheel
 
-cp -r dist users/dist
+popd
+cp -r common/dist users

@@ -19,9 +19,9 @@ class Config:
 class DockerConfig(Config):
     PORT = 8080
     USER_SERVICE_URL = 'http://users:8080/api/v1/user_controller/me'
-    DB_NAME = os.environ.get('DB_NAME', 'user')
+    DB_NAME = os.environ.get('DB_NAME', 'database')
     DB_PWD = os.environ.get('DB_PWD', 'password')
-    DB_USER = os.environ.get('DB_USER', 'database')
+    DB_USER = os.environ.get('DB_USER', 'user')
     SQL_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PWD}@database/{DB_NAME}'
 
 

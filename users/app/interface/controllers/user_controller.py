@@ -51,12 +51,12 @@ async def me(user: Dict[str, Any] = Depends(get_current_username)):
 
 
 @router.post('/addOne')
-async def add_one(user: UserIn, user_auth=Depends(get_user_implicit)):
+async def add_one(user: UserIn):
     user: User = user_service.create_user(user.name, user.password)
     return asdict(user)
 
 
 @router.get('/getAll')
-async def get_all():
+async def get_all(user_auth=Depends(get_user_implicit)):
     users: List[User] = user_service.get_all_users()
     return list(map(lambda x: asdict(x), users))

@@ -6,6 +6,7 @@ assert 'APP_ENV' in os.environ, 'MAKE SURE TO SET AN ENVIRONMENT'
 class Config:
     TOKEN_SERVICE_URL = 'http://localhost:8082/api/v1/token_controller/'
     TOKEN_CREATION = 'token'
+    SIGN_IN_PAGE = 'auth'
     TOKEN_INFO = 'tokenInfo'
     CLIENT_ID = 'my_client_id'
 

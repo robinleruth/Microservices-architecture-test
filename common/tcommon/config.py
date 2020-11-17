@@ -9,6 +9,9 @@ class Config:
     SIGN_IN_PAGE = 'auth'
     TOKEN_INFO = 'tokenInfo'
     CLIENT_ID = 'my_client_id'
+    SCOPES = {
+        'test': 'test'
+    }
 
 
 class DockerConfig(Config):

@@ -17,7 +17,10 @@ class Config:
 class DockerConfig(Config):
     PORT = 8080
     TOKEN_SERVICE_URL = 'http://token:8080/api/v1/token_controller/'
-    SQL_URI = 'postgresql+psycopg2://user:password@database/database'
+    DB_NAME = os.environ.get('DB_NAME', 'user')
+    DB_PWD = os.environ.get('DB_PWD', 'password')
+    DB_USER = os.environ.get('DB_USER', 'database')
+    SQL_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PWD}@database/{DB_NAME}'
 
 
 class TestConfig(Config):

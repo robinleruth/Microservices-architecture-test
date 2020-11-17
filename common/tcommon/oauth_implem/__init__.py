@@ -9,9 +9,9 @@ from tcommon.authenticate_token import get_user_info_by_token, UnauthorizedExcep
 from tcommon.config import app_config
 
 url = app_config.TOKEN_SERVICE_URL + app_config.SIGN_IN_PAGE
-oauth2_scheme: OAuth2 = OAuth2(
-    flows=OAuthFlows(implicit=OAuthFlowImplicit(authorizationUrl=url + f'?client_id={app_config.CLIENT_ID}',
-                                                scopes=app_config.SCOPES)))
+oauth2_scheme: OAuth2 = OAuth2(flows=OAuthFlows(
+    implicit=OAuthFlowImplicit(authorizationUrl=url + f'?client_id={app_config.CLIENT_ID}',
+                               scopes=app_config.SCOPES)))
 
 
 def get_user_implicit(token: str = Security(oauth2_scheme)):

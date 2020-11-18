@@ -5,3 +5,4 @@ from dataclasses import dataclass
 class Token:
     access_token: str
     token_type: str
+    expire_in: int

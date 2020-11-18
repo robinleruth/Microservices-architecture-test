@@ -9,9 +9,6 @@ class Config:
     SIGN_IN_PAGE = 'auth'
     TOKEN_INFO = 'tokenInfo'
     CLIENT_ID = 'my_client_id'
-    SCOPES = {
-        "me": "Read information about the current user."
-    }
 
 
 class DockerConfig(Config):

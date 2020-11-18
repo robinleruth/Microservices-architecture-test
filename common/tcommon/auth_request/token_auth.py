@@ -42,7 +42,7 @@ class TokenAuth(AuthBase):
         return hash(self.username)
 
     def __call__(self, r):
-        r.headers['Authorization'] = f"Authorization {self._get_token()}"
+        r.headers['Authorization'] = f"Bearer {self._get_token()}"
         return r
 
     @memoize_token

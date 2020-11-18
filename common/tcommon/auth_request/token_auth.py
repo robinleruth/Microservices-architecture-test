@@ -19,9 +19,11 @@ def memoize_token(func):
         nonlocal cached_tokens
         if self.expire_time is not None:
             remaining = self.expire_time - dt.datetime.utcnow()
-            print(f'Remaining : {remaining}')
+            print(f'Remaining validity time for token for user {self.username} : {remaining}')
+            logger.info(f'Remaining validity time for token for user {self.username} : {remaining}')
         if self not in cached_tokens or (self.expire_time is not None and remaining.seconds < 10):
             print(f'No token cached for {self.username}')
+            logger.info(f'No token cached for {self.username}')
             cached_tokens[self] = func(self, *args, **kwargs)
         return cached_tokens[self]
 

@@ -1,5 +1,6 @@
 import datetime as dt
 import logging
+from functools import wraps
 from typing import List
 
 import requests
@@ -11,17 +12,18 @@ logger = logging.getLogger(__name__)
 
 
 def memoize_token(func):
-    cached_token = None
+    cached_tokens = {}
 
+    @wraps(func)
     def inner(self, *args, **kwargs):
-        nonlocal cached_token
+        nonlocal cached_tokens
         if self.expire_time is not None:
             remaining = self.expire_time - dt.datetime.utcnow()
             print(f'Remaining : {remaining}')
-        if cached_token is None or (self.expire_time is not None and remaining.seconds < 10):
+        if self not in cached_tokens or (self.expire_time is not None and remaining.seconds < 10):
             print('No token cached')
-            cached_token = func(self, *args, **kwargs)
-        return cached_token
+            cached_tokens[self] = func(self, *args, **kwargs)
+        return cached_tokens[self]
 
     return inner
 
@@ -32,6 +34,12 @@ class TokenAuth(AuthBase):
         self.password = password
         self.scopes = ' '.join(scopes)
         self.expire_time = None
+
+    def __eq__(self, o: object) -> bool:
+        return self.__class__ == o.__class__ and self.username == o.username
+
+    def __hash__(self):
+        return hash(self.username)
 
     def __call__(self, r):
         r.headers['Authorization'] = f"Authorization {self._get_token()}"

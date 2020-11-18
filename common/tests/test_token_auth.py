@@ -23,3 +23,10 @@ class TestTokenAuth(unittest.TestCase):
                 r = s.get('http://localhost:8082/api/v1/token_controller/tokenInfo')
                 print(r)
         mock_request.assert_called_once()
+        with patch('requests.post') as mock_request:
+            ret = MagicMock()
+            ret.json = lambda: {'access_token': '456', 'expire_in': 3}
+            mock_request.return_value = ret
+            another_auth = TokenAuth(username='Robinn', password='test', scopes=['me'])
+            token = another_auth._get_token()
+            self.assertNotEqual('123', token)

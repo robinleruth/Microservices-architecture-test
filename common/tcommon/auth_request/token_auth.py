@@ -55,6 +55,10 @@ class TokenAuth(AuthBase):
         url = app_config.TOKEN_SERVICE_URL + app_config.TOKEN_CREATION
         logger.info(f'GET Token {url}')
         r = requests.post(url, headers=headers, data=data)
+        if r.status_code == 401:
+            raise Exception(f'Unauthorized : {r.json()}')
+        if r.status_code == 403:
+            raise Exception(f'Forbidden : {r.json()}')
         token = r.json()['access_token']
         expire_in = r.json()['expire_in']
         self.expire_time = dt.datetime.utcnow() + dt.timedelta(minutes=expire_in)

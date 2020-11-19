@@ -12,7 +12,6 @@ from tcommon.config import app_config, TestConfig
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-logger.info = print
 
 
 @dataclass

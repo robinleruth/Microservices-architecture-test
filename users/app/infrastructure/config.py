@@ -7,11 +7,7 @@ class Config:
     PORT = 8081
     SECRET_KEY = os.environ.get('SECRET', 'secret')
     SQL_URI = 'sqlite:///app.db'
-    TOKEN_SERVICE_URL = 'http://localhost:8082/api/v1/token_controller/'
-    TOKEN_CREATION = 'token'
-    TOKEN_INFO = 'tokenInfo'
     CLIENT_ID = '123'
-    SIGN_IN_PAGE = 'auth'
     SCOPES = {
         "me": "Read information about the current user.",
         "all": "Read information about everyone",
@@ -20,7 +16,6 @@ class Config:
 
 class DockerConfig(Config):
     PORT = 8080
-    TOKEN_SERVICE_URL = 'http://token:8080/api/v1/token_controller/'
     DB_NAME = os.environ.get('DB_NAME', 'database')
     DB_PWD = os.environ.get('DB_PWD', 'password')
     DB_USER = os.environ.get('DB_USER', 'user')

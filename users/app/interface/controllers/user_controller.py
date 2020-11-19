@@ -19,7 +19,7 @@ security = HTTPBasic()
 
 logger = logging.getLogger(__name__)
 
-oauth_implem = OauthImplem(scopes=app_config.SCOPES)
+oauth_implem = OauthImplem(scopes=app_config.SCOPES, client_id=app_config.CLIENT_ID)
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):

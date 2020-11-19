@@ -1,6 +1,8 @@
 import os
 
 assert 'APP_ENV' in os.environ, 'MAKE SURE TO SET AN ENVIRONMENT'
+basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.split(basedir)[0]
 
 
 class Config:
@@ -8,7 +10,11 @@ class Config:
     TOKEN_CREATION = 'token'
     SIGN_IN_PAGE = 'auth'
     TOKEN_INFO = 'tokenInfo'
-    CLIENT_ID = 'my_client_id'
+    BASEDIR = basedir
+    LOG_FOLDER = os.path.join(BASEDIR, 'logs')
+    LOG_FILENAME = 'app.log'
+    LOG_FILE_PATH = os.path.join(LOG_FOLDER, LOG_FILENAME)
+    LOGGER_NAME = 'token_logger'
 
 
 class DockerConfig(Config):

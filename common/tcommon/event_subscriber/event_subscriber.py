@@ -1,5 +1,4 @@
 import abc
-import logging
 import pickle
 from dataclasses import dataclass, InitVar, field
 from threading import Thread
@@ -9,9 +8,7 @@ import asyncio
 from aioredis import Channel
 
 from tcommon.config import app_config, TestConfig
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+from tcommon.log import logger
 
 
 @dataclass
@@ -70,6 +67,8 @@ class EventSubscriber(metaclass=abc.ABCMeta):
             # Once completed, remove entry from Processing list
             await redis_conn.rpop(processing_list_name)
             logger.info('Processing done, awaiting new message.')
+            if app_config is TestConfig:
+                break
 
     @abc.abstractmethod
     async def process_event(self, event_data):

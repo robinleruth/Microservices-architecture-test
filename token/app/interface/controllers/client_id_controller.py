@@ -1,4 +1,3 @@
-import logging
 import secrets
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,7 +9,6 @@ from app.infrastructure.config import app_config
 from app.interface.schemas.client_id import ClientId
 
 router = APIRouter()
-logger = logging.getLogger(__name__)
 
 security = HTTPBasic()
 

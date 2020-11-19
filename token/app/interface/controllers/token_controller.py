@@ -1,4 +1,3 @@
-import logging
 import os
 import urllib.parse as urlparse
 from dataclasses import asdict
@@ -23,6 +22,7 @@ from app.domain.services.token.bean import get_token_service
 from app.domain.services.token.token_service import TokenService
 from app.infrastructure.config import app_config
 from app.infrastructure.connector.user_service_connection_error import UserServiceConnectionError
+from app.infrastructure.log import logger
 
 router = APIRouter()
 
@@ -32,8 +32,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token_controller/token",
 basedir = os.path.abspath(os.path.dirname(__file__))
 os.path.join(basedir, 'templates')
 templates = Jinja2Templates(directory=os.path.join(basedir, 'templates'))
-
-logger = logging.getLogger(__name__)
 
 
 async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme),

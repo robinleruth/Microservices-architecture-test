@@ -1,6 +1,8 @@
 import os
 
 assert 'APP_ENV' in os.environ, 'MAKE SURE TO SET AN ENVIRONMENT'
+basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.split(basedir)[0]
 
 
 class Config:
@@ -12,6 +14,11 @@ class Config:
         "me": "Read information about the current user.",
         "all": "Read information about everyone",
     }
+    BASEDIR = basedir
+    LOG_FOLDER = os.path.join(BASEDIR, 'logs')
+    LOG_FILENAME = 'app.log'
+    LOG_FILE_PATH = os.path.join(LOG_FOLDER, LOG_FILENAME)
+    LOGGER_NAME = 'users_logger'
 
 
 class DockerConfig(Config):

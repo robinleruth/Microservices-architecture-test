@@ -1,5 +1,4 @@
 import datetime as dt
-import logging
 from functools import wraps
 from typing import List
 
@@ -7,8 +6,7 @@ import requests
 from requests.auth import AuthBase
 
 from tcommon.config import app_config
-
-logger = logging.getLogger(__name__)
+from tcommon.log import logger
 
 
 def memoize_token(func):

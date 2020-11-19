@@ -27,7 +27,9 @@ class EventSubscriber(metaclass=abc.ABCMeta):
 
         if app_config is not TestConfig:
             logger.info(f'Launch thread for Event Subscriber for Channel {self.channel_name}')
-            Thread(target=run).start()
+            t = Thread(target=run)
+            t.daemon = True
+            t.start()
 
     async def read_redis_message(self, redis_host: str, redis_port: int):
         logger.info(f'Init event subscriber redis connection. Channel name {self.channel_name}')

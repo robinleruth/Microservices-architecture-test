@@ -1,5 +1,5 @@
 import abc
-import pickle
+import json
 from dataclasses import dataclass, InitVar, field
 from threading import Thread
 
@@ -49,8 +49,7 @@ class EventSubscriber(metaclass=abc.ABCMeta):
             try:
                 logger.info(f'RPOPLPUSH from {published_list_name} to {processing_list_name}')
                 event_data = await redis_conn.rpoplpush(published_list_name, processing_list_name)
-                # TODO: pickling data is only good for python client, what about java ?
-                event_data = pickle.loads(event_data)
+                event_data = json.loads(event_data)
                 logger.info(f'Got event data {event_data}')
             except Exception as e:
                 # If it fails, it means another instance of the service has taken it already

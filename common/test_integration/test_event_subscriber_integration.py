@@ -3,7 +3,7 @@ import os
 os.environ['APP_ENV'] = 'test'
 import aioredis
 import asyncio
-import pickle
+import json
 from unittest import IsolatedAsyncioTestCase
 
 from tcommon.event_subscriber.event_subscriber import EventSubscriber
@@ -36,7 +36,7 @@ class TestEventSubscriberIntegration(IsolatedAsyncioTestCase):
         async def wait_and_publish():
             await asyncio.sleep(1)
             print(f'publishing in {published_list_name} : {event_data}')
-            await redis_conn.lpush(published_list_name, pickle.dumps(event_data))
+            await redis_conn.lpush(published_list_name, json.dumps(event_data))
             print(f'Publishing event notif in {event_notif_channel}')
             await redis_conn.publish(event_notif_channel, 'Message !')
 

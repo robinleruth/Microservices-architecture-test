@@ -14,7 +14,7 @@ class Config:
     LOG_FOLDER = os.path.join(BASEDIR, 'logs')
     LOG_FILENAME = 'app.log'
     LOG_FILE_PATH = os.path.join(LOG_FOLDER, LOG_FILENAME)
-    LOGGER_NAME = 'token_logger'
+    LOGGER_NAME = 'common_logger'
 
 
 class DockerConfig(Config):

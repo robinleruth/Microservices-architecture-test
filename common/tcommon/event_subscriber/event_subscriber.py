@@ -8,6 +8,7 @@ import asyncio
 from aioredis import Channel
 
 from tcommon.config import app_config, TestConfig
+from tcommon.event_subscriber.model import EventDto
 from tcommon.log import logger
 
 
@@ -50,14 +51,15 @@ class EventSubscriber(metaclass=abc.ABCMeta):
                 logger.info(f'RPOPLPUSH from {published_list_name} to {processing_list_name}')
                 event_data = await redis_conn.rpoplpush(published_list_name, processing_list_name)
                 event_data = json.loads(event_data)
-                logger.info(f'Got event data {event_data}')
+                event = EventDto(**event_data)
+                logger.info(f'Got event data {event}')
             except Exception as e:
                 # If it fails, it means another instance of the service has taken it already
                 logger.warning(
                     f"RPOPLPUSH from {published_list_name} to {processing_list_name} didn't work. It must have been taken already -> Exception : {e}")
                 continue
             try:
-                await self.process_event(event_data)
+                await self.process_event(event)
             except Exception as e:
                 logger.error(f'ERROR while processing data -> {e}.')
                 logger.info(f'Task not processed and put in {not_able_to_process_list_name}')
@@ -70,5 +72,5 @@ class EventSubscriber(metaclass=abc.ABCMeta):
                 break
 
     @abc.abstractmethod
-    async def process_event(self, event_data):
+    async def process_event(self, event: EventDto):
         pass

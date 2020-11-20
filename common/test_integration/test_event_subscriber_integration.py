@@ -2,9 +2,13 @@ import os
 
 os.environ['APP_ENV'] = 'test'
 import aioredis
+import datetime as dt
+from dataclasses import asdict
 import asyncio
 import json
 from unittest import IsolatedAsyncioTestCase
+from tcommon.event_subscriber.model import EventDto
+from tcommon.event_subscriber.util import DateTimeEncoder
 
 from tcommon.event_subscriber.event_subscriber import EventSubscriber
 
@@ -13,7 +17,7 @@ class TestEventSubscriberIntegration(IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         class Implem(EventSubscriber):
             async def process_event(self, event_data):
-                print(event_data, ' received')
+                print(f'In process_event : {event_data} received')
                 return event_data
 
         self.event_sub = Implem('TestChannel')
@@ -32,11 +36,17 @@ class TestEventSubscriberIntegration(IsolatedAsyncioTestCase):
                 'c': 'b'
             }
         }
+        event = EventDto(aggregate_type='Order',
+                         aggregate_id='123',
+                         event_id='484ca82951914f05857dd4908c3fcdbe',
+                         event_type='OrderCreated',
+                         event_data=event_data,
+                         created_at=dt.datetime(2020, 11, 20, 9, 15, 39, 411263))
 
         async def wait_and_publish():
             await asyncio.sleep(1)
-            print(f'publishing in {published_list_name} : {event_data}')
-            await redis_conn.lpush(published_list_name, json.dumps(event_data))
+            print(f'publishing in {published_list_name} : {event}')
+            await redis_conn.lpush(published_list_name, json.dumps(asdict(event), cls=DateTimeEncoder))
             print(f'Publishing event notif in {event_notif_channel}')
             await redis_conn.publish(event_notif_channel, 'Message !')
 

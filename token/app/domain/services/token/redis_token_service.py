@@ -37,4 +37,5 @@ class RedisTokenService(TokenService):
                 self.user_info_by_token.delete(token)
 
     def _add_to_dict(self, key, user: User):
+        self.keys.add(self.PREFIX + key)
         self.user_info_by_token[self.PREFIX + key] = pickle.dumps(user)

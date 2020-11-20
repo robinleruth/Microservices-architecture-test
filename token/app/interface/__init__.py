@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from ..domain.services.token.bean import get_token_service
+
 api = FastAPI(title='Token API',
               description='',
               version='0.1')
@@ -12,6 +14,7 @@ api.include_router(token_controller.router,
                    tags=['token_controller'])
 
 from .controllers import client_id_controller
+
 api.include_router(client_id_controller.router,
                    prefix='/api/v1/client_id_controller',
                    tags=['client_id_controller'])
@@ -23,3 +26,8 @@ api.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@api.on_event('startup')
+async def startup():
+    get_token_service()

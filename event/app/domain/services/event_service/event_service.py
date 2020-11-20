@@ -1,11 +1,11 @@
 import json
 from dataclasses import dataclass
-from typing import Dict, Any
 
 import aioredis
 
 from app.domain.model.event import EventIn, Event
 from app.domain.services.event_store.event_store import EventStore
+from app.domain.services.util import DateTimeEncoder
 from app.infrastructure.config import app_config
 from app.infrastructure.log import logger
 
@@ -27,7 +27,7 @@ class EventService:
     async def process_event(self, event: EventIn) -> Event:
         logger.info(f'Processing event {event}')
         event_out: Event = await self.save_in_event_store(event)
-        await self.send_event(event.channel_name, event.event_data)
+        await self.send_event(event.channel_name, event_out)
         await self.publish_notification(event.channel_name)
         return event_out
 
@@ -36,10 +36,10 @@ class EventService:
         logger.info(f'Publishing notification to subscribers on {chan}')
         return await self.redis.publish(chan, 'Notification')
 
-    async def send_event(self, channel_name: str, event_data: Dict[str, Any]):
+    async def send_event(self, channel_name: str, event_out: Event):
         chan = channel_name + app_config.PUBLISHED_LIST_SUFFIXED
-        logger.info(f'Sending event on channel {chan}. Event : {event_data}')
-        return await self.redis.lpush(chan, json.dumps(event_data))
+        logger.info(f'Sending event on channel {chan}. Event : {event_out.dict()}')
+        return await self.redis.lpush(chan, json.dumps(event_out.dict(), cls=DateTimeEncoder))
 
     async def save_in_event_store(self, event: EventIn) -> Event:
         return await self.store.save(event)

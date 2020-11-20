@@ -34,4 +34,4 @@ class TestEventStore(IsolatedAsyncioTestCase):
         print(len(agg.events))
         for i in agg.events:
             print(i)
-        event_store.close()
+        await event_store.close()

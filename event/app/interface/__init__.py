@@ -36,6 +36,5 @@ asyncio.run(init_services())
 @api.on_event('shutdown')
 async def shut_redis_connection():
     event_store = await get_event_store()
-    await event_store.close()
     event_service = await get_event_service()
-    await event_service.close()
+    await asyncio.gather(event_store.close(), event_service.close())

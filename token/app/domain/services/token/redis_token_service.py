@@ -32,7 +32,7 @@ class RedisTokenService(TokenService):
 
     def _refresh_cache(self):
         for token in self.keys:
-            if self._is_token_expired(token):
+            if self._is_token_expired(token.split(self.PREFIX)[1]):
                 self.keys.remove(token)
                 self.user_info_by_token.delete(token)
 

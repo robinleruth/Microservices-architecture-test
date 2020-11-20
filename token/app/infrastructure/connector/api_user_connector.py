@@ -1,5 +1,3 @@
-import logging
-
 import requests
 
 from app.domain.model.credentials import Credentials
@@ -7,8 +5,7 @@ from app.domain.model.user import User
 from app.domain.services.token.user_connector import UserConnector
 from app.infrastructure.config import app_config
 from app.infrastructure.connector.user_service_connection_error import UserServiceConnectionError
-
-logger = logging.getLogger(__name__)
+from app.infrastructure.log import logger
 
 
 class ApiUserConnector(UserConnector):

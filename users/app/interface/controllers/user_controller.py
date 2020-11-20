@@ -1,5 +1,5 @@
-import logging
 from dataclasses import asdict
+from app.infrastructure.log import logger
 from typing import Dict, Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, Security
@@ -17,9 +17,7 @@ router = APIRouter()
 
 security = HTTPBasic()
 
-logger = logging.getLogger(__name__)
-
-oauth_implem = OauthImplem(scopes=app_config.SCOPES)
+oauth_implem = OauthImplem(scopes=app_config.SCOPES, client_id=app_config.CLIENT_ID)
 
 
 def get_current_username(credentials: HTTPBasicCredentials = Depends(security)):
@@ -55,6 +53,7 @@ async def me(user: Dict[str, Any] = Depends(get_current_username)):
 
 @router.post('/addOne')
 async def add_one(user: UserIn):
+    logger.info(f'Create a user : {user}')
     user: User = user_service.create_user(user.name, user.password, user.scopes)
     return asdict(user)
 

@@ -6,19 +6,22 @@ basedir = os.path.split(basedir)[0]
 
 
 class Config:
-    PORT = 8081
+    PORT = 8083
     SECRET_KEY = os.environ.get('SECRET', 'secret')
     SQL_URI = 'sqlite:///app.db'
-    CLIENT_ID = '123'
     SCOPES = {
-        "me": "Read information about the current user.",
-        "all": "Read information about everyone",
+
     }
+    CLIENT_ID = 'event_service'
     BASEDIR = basedir
     LOG_FOLDER = os.path.join(BASEDIR, 'logs')
     LOG_FILENAME = 'app.log'
     LOG_FILE_PATH = os.path.join(LOG_FOLDER, LOG_FILENAME)
-    LOGGER_NAME = 'users_logger'
+    LOGGER_NAME = 'event_logger'
+    REDIS_HOST = 'localhost'
+    REDIS_PORT = '6379'
+    EVENT_NOTIFICATION_SUFFIXE = ':EventNotification'
+    PUBLISHED_LIST_SUFFIXED = ':PublishedList'
 
 
 class DockerConfig(Config):
@@ -27,6 +30,7 @@ class DockerConfig(Config):
     DB_PWD = os.environ.get('DB_PWD', 'password')
     DB_USER = os.environ.get('DB_USER', 'user')
     SQL_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PWD}@database/{DB_NAME}'
+    REDIS_HOST = 'redis'
 
 
 class TestConfig(Config):

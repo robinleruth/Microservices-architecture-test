@@ -1,12 +1,9 @@
-import logging
-
 import requests
 
 from tcommon.authenticate_token.model import User
 from tcommon.authenticate_token.unauthorized_exception import UnauthorizedException
 from tcommon.config import app_config
-
-logger = logging.getLogger(__name__)
+from tcommon.log import logger
 
 
 def get_user_info_by_token(token: str) -> User:

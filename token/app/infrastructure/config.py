@@ -3,6 +3,9 @@ import os
 assert 'APP_ENV' in os.environ, 'MAKE SURE TO SET AN ENVIRONMENT'
 assert 'SECRET_KEY' in os.environ, 'SECRET_KEY is not in env, generate it with $ openssl rand -hex 32 and put it in env'
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.split(basedir)[0]
+
 
 class Config:
     PORT = 8082
@@ -17,6 +20,13 @@ class Config:
     SCOPES = {
         "me": "Read information about the current user."
     }
+    BASEDIR = basedir
+    LOG_FOLDER = os.path.join(BASEDIR, 'logs')
+    LOG_FILENAME = 'app.log'
+    LOG_FILE_PATH = os.path.join(LOG_FOLDER, LOG_FILENAME)
+    LOGGER_NAME = 'token_logger'
+    REDIS_HOST = 'localhost'
+    REDIS_PORT = '6379'
 
 
 class DockerConfig(Config):
@@ -26,6 +36,7 @@ class DockerConfig(Config):
     DB_PWD = os.environ.get('DB_PWD', 'password')
     DB_USER = os.environ.get('DB_USER', 'user')
     SQL_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PWD}@database/{DB_NAME}'
+    REDIS_HOST = 'redis'
 
 
 class TestConfig(Config):

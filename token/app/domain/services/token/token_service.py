@@ -1,4 +1,3 @@
-import logging
 import time
 from dataclasses import dataclass
 from dataclasses import field
@@ -17,8 +16,7 @@ from app.domain.model.user_not_found import UserNotFound
 from app.domain.services.token.user_connector import UserConnector
 from app.infrastructure.config import TestConfig
 from app.infrastructure.config import app_config
-
-logger = logging.getLogger(__name__)
+from app.infrastructure.log import logger
 
 
 @dataclass
@@ -79,7 +77,8 @@ class TokenService:
                             scopes: List[str] = None):
         user = self.connector.get_by_name(username, credentials)
         if scopes and not user.has_scopes(scopes):
-            raise ScopeNotAllowedException(f'User {user.nickname} is not allowed for scope {" ".join(user.scopes_not_allowed)}')
+            raise ScopeNotAllowedException(
+                f'User {user.nickname} is not allowed for scope {" ".join(user.scopes_not_allowed)}')
         to_encode = {"sub": user.nickname, "scopes": scopes if scopes else []}
         if expires_delta:
             expire = datetime.utcnow() + expires_delta

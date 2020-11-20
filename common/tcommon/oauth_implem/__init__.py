@@ -13,10 +13,10 @@ url = app_config.TOKEN_SERVICE_URL + app_config.SIGN_IN_PAGE
 
 
 class OauthImplem:
-    def __init__(self, scopes: List[str]):
+    def __init__(self, scopes: List[str], client_id: str):
         self.scopes = scopes
         self.oauth2_scheme: OAuth2 = OAuth2(flows=OAuthFlows(
-            implicit=OAuthFlowImplicit(authorizationUrl=url + f'?client_id={app_config.CLIENT_ID}',
+            implicit=OAuthFlowImplicit(authorizationUrl=url + f'?client_id={client_id}',
                                        scopes=self.scopes)))
 
     def get_user_implicit(self):

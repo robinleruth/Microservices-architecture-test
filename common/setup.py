@@ -8,6 +8,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'fastapi',
-        'requests'
+        'requests',
+        'aioredis',
+        'asyncio'
     ]
 )

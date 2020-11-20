@@ -8,6 +8,7 @@ import redis
 from app.domain.model.credentials import Credentials
 from app.domain.model.user import User
 from app.domain.services.token.token_service import TokenService
+from app.infrastructure.config import app_config
 
 
 @dataclass
@@ -19,7 +20,7 @@ class RedisTokenService(TokenService):
 
     def __post_init__(self):
         super().__post_init__()
-        self.user_info_by_token = redis.Redis()
+        self.user_info_by_token = redis.Redis(host=app_config.REDIS_HOST, port=app_config.REDIS_PORT)
 
     def _get_from_connector(self, name, credentials: Credentials):
         return pickle.dumps(self.connector.get_by_name(name, credentials))

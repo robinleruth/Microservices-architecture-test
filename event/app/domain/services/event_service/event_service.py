@@ -45,5 +45,6 @@ class EventService:
         return await self.store.save(event)
 
     async def close(self):
+        logger.info('Closing redis Connection for Event Service')
         self.redis.close()
         await self.redis.wait_closed()

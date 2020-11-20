@@ -62,5 +62,6 @@ class EventStore:
         )
 
     async def close(self):
+        logger.info('Closing redis Connection for Event Store')
         self.redis.close()
         await self.redis.wait_closed()

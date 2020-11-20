@@ -30,6 +30,7 @@ services:
         - "database"
   
   event:
+    image: event
     build: event/
     ports:
       - "8083:8080"

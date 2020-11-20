@@ -37,9 +37,12 @@ class EventService:
         return await self.redis.publish(chan, 'Notification')
 
     async def send_event(self, channel_name: str, event_out: Event):
-        chan = channel_name + app_config.PUBLISHED_LIST_SUFFIXED
-        logger.info(f'Sending event on channel {chan}. Event : {event_out.dict()}')
-        return await self.redis.lpush(chan, json.dumps(event_out.dict(), cls=DateTimeEncoder))
+        subscriber_list = channel_name + app_config.SUBSCRIBER_LIST_SUFFIXE
+        sub_set = await self.redis.smembers(subscriber_list, encoding='utf-8')
+        for sub in sub_set:
+            chan = channel_name + app_config.PUBLISHED_LIST_SUFFIXED + f':{sub}'
+            logger.info(f'Sending event on channel {chan}. Event : {event_out.dict()}')
+            await self.redis.lpush(chan, json.dumps(event_out.dict(), cls=DateTimeEncoder))
 
     async def save_in_event_store(self, event: EventIn) -> Event:
         return await self.store.save(event)

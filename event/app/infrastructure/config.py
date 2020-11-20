@@ -23,6 +23,7 @@ class Config:
     REDIS_PORT = '6379'
     EVENT_NOTIFICATION_SUFFIXE = ':EventNotification'
     PUBLISHED_LIST_SUFFIXED = ':PublishedList'
+    SUBSCRIBER_LIST_SUFFIXE = ':SubscriberList'
 
 
 class DockerConfig(Config):

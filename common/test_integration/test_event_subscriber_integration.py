@@ -23,6 +23,7 @@ class TestEventSubscriberIntegration(IsolatedAsyncioTestCase):
         self.event_sub = Implem('TestChannel')
 
     async def test_read(self):
+        subscriber_list = 'TestChannel' + ':SubscriberList'
         event_notif_channel = 'TestChannel' + ':EventNotification'
         published_list_name = 'TestChannel' + ':PublishedList'
         processing_list_name = 'TestChannel' + ':ProcessingList'
@@ -45,8 +46,12 @@ class TestEventSubscriberIntegration(IsolatedAsyncioTestCase):
 
         async def wait_and_publish():
             await asyncio.sleep(1)
-            print(f'publishing in {published_list_name} : {event}')
-            await redis_conn.lpush(published_list_name, json.dumps(asdict(event), cls=DateTimeEncoder))
+            # For each sub in set
+            sub_set = await redis_conn.smembers(subscriber_list, encoding='utf-8')
+            for sub in sub_set:
+                published_list = f'{published_list_name}:{sub}'
+                print(f'publishing in {published_list} : {event}')
+                await redis_conn.lpush(published_list, json.dumps(asdict(event), cls=DateTimeEncoder))
             print(f'Publishing event notif in {event_notif_channel}')
             await redis_conn.publish(event_notif_channel, 'Message !')
 

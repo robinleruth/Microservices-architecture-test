@@ -31,15 +31,19 @@ class EventSubscriber(metaclass=abc.ABCMeta):
 
     async def read_redis_message(self, redis_host: str, redis_port: int):
         logger.info(f'Init event subscriber redis connection. Channel name {self.channel_name}')
+        suffixe = self.__class__.__name__
+        subscriber_list = self.channel_name + ':SubscriberList'
         event_notif_channel = self.channel_name + ':EventNotification'
-        published_list_name = self.channel_name + ':PublishedList'
-        processing_list_name = self.channel_name + ':ProcessingList'
-        not_able_to_process_list_name = self.channel_name + ':NotAbleToProcessList'
+        published_list_name = self.channel_name + ':PublishedList:' + suffixe
+        processing_list_name = self.channel_name + ':ProcessingList:' + suffixe
+        not_able_to_process_list_name = self.channel_name + ':NotAbleToProcessList:' + suffixe
         logger.info(f'Listens to {event_notif_channel}')
         redis_uri = f'redis://{redis_host}:{redis_port}'
         redis_conn = await aioredis.create_redis(redis_uri)
         subscriber_conn = await aioredis.create_redis(redis_uri)
         channel: Channel = await subscriber_conn.subscribe(event_notif_channel)
+        # Put itself in Subscriber set
+        redis_conn.sadd(subscriber_list, suffixe)
         # Register to ChannelName:EventNotification
         while await channel[0].wait_message():
             # Check if data in Published list, if so process them

@@ -23,7 +23,7 @@ Service enabling Event Sourcing for Data consistency across services.
 Services can use the REST Api to spread event in the system.
 
 When an event is published :
-* Event data is LPUSH into a Published list for corresponding event
+* Event data is LPUSH into a Published list for each subscriber for corresponding event
 * A notification event is published in an atomic operation. It notifies everyone in the Subscribers list for the corresponding event that an event is available in Published List
 
 A subscriber registers itself in a SUBSCRIBERS list in Redis. When it receives notification :

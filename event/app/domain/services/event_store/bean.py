@@ -1,8 +1,8 @@
-from functools import lru_cache
-
 from app.domain.services.event_store.event_store import EventStore
 
+event_store = EventStore()
 
-@lru_cache()
-def get_event_store() -> EventStore:
-    return EventStore()
+
+async def get_event_store() -> EventStore:
+    await event_store.init_redis()
+    return event_store

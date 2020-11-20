@@ -25,6 +25,8 @@ class Config:
     LOG_FILENAME = 'app.log'
     LOG_FILE_PATH = os.path.join(LOG_FOLDER, LOG_FILENAME)
     LOGGER_NAME = 'token_logger'
+    REDIS_HOST = 'localhost'
+    REDIS_PORT = '6379'
 
 
 class DockerConfig(Config):
@@ -34,6 +36,7 @@ class DockerConfig(Config):
     DB_PWD = os.environ.get('DB_PWD', 'password')
     DB_USER = os.environ.get('DB_USER', 'user')
     SQL_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PWD}@database/{DB_NAME}'
+    REDIS_HOST = 'redis'
 
 
 class TestConfig(Config):

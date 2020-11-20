@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 
 from app.domain.model.event import EventIn, Event
+from app.domain.services.event_service.bean import get_event_service
+from app.domain.services.event_service.event_service import EventService
 from app.domain.services.event_store.bean import get_event_store
 from app.domain.services.event_store.event_store import EventStore
 
@@ -8,12 +10,10 @@ router = APIRouter()
 
 
 @router.post('/sendEvent', response_model=Event)
-async def send_event(aggregate: EventIn, event_store: EventStore = Depends(get_event_store)):
-    if aggregate.aggregate_id is None:
-        aggregate.aggregate_id = event_store._generate_uuid()
-    return aggregate
+async def send_event(event: EventIn, event_service: EventService = Depends(get_event_service)):
+    return await event_service.process_event(event)
 
 
 @router.get('/getAuditTrail')
-async def get_audit_trail(aggregate_id: str):
-    pass
+async def get_audit_trail(aggregate_id: str, event_store: EventStore = Depends(get_event_store)):
+    return await event_store.get_aggregate(aggregate_id)

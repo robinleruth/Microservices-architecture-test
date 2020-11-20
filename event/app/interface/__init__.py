@@ -1,5 +1,10 @@
+import asyncio
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from ..domain.services.event_service.bean import get_event_service
+from ..domain.services.event_store.bean import get_event_store
 
 api = FastAPI(title='Token API',
               description='',
@@ -18,3 +23,11 @@ api.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+async def init_services():
+    await get_event_store()
+    await get_event_service()
+
+
+asyncio.run(init_services())

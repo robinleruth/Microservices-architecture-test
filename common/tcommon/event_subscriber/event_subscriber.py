@@ -43,6 +43,7 @@ class EventSubscriber(metaclass=abc.ABCMeta):
         subscriber_conn = await aioredis.create_redis(redis_uri)
         channel: Channel = await subscriber_conn.subscribe(event_notif_channel)
         # Put itself in Subscriber set
+        logger.info(f'Register in subscriber list {subscriber_list} as {suffixe}')
         redis_conn.sadd(subscriber_list, suffixe)
         # Register to ChannelName:EventNotification
         while await channel[0].wait_message():

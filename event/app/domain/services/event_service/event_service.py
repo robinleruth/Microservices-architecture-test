@@ -38,7 +38,9 @@ class EventService:
 
     async def send_event(self, channel_name: str, event_out: Event):
         subscriber_list = channel_name + app_config.SUBSCRIBER_LIST_SUFFIXE
+        logger.info(f'Retrieving subscribers set for {subscriber_list}')
         sub_set = await self.redis.smembers(subscriber_list, encoding='utf-8')
+        logger.info(f'List retrieved : {sub_set}')
         for sub in sub_set:
             chan = channel_name + app_config.PUBLISHED_LIST_SUFFIXED + f':{sub}'
             logger.info(f'Sending event on channel {chan}. Event : {event_out.dict()}')

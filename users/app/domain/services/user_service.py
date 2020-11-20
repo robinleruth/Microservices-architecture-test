@@ -30,3 +30,16 @@ def create_user(name: str, pwd: str, scopes: List[str] = None) -> User:
         session.commit()
         ret = User(**user.serialize)
     return ret
+
+
+def update_scope(name: str, scopes: List[str]) -> User:
+    logger.info(f'Updating scope of user {name} with {scopes}')
+    with transaction_context() as session:
+        user = session.query(DbUser).filter_by(nickname=name).first()
+        if user is None:
+            raise Exception(f'No user named {name}')
+        user.scopes = ' '.join(scopes)
+        session.commit()
+        ret = User(**user.serialize)
+    return ret
+

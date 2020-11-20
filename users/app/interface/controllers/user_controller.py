@@ -1,5 +1,4 @@
 from dataclasses import asdict
-from app.infrastructure.log import logger
 from typing import Dict, Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, Security
@@ -11,7 +10,8 @@ from app.domain.model.user import User
 from app.domain.services import user_service, password_service
 from app.domain.services.user_not_found_exception import UserNotFoundException
 from app.infrastructure.config import app_config
-from app.interface.schemas.user import UserIn
+from app.infrastructure.log import logger
+from app.interface.schemas.user import UserIn, UpdateScope
 
 router = APIRouter()
 
@@ -62,3 +62,8 @@ async def add_one(user: UserIn):
 async def get_all(user_auth=Security(oauth_implem.get_user_implicit(), scopes=['all'])):
     users: List[User] = user_service.get_all_users()
     return list(map(lambda x: asdict(x), users))
+
+
+@router.put('/updateScopes')
+async def update_scopes(update_scope: UpdateScope, user_auth=Security(oauth_implem.get_user_implicit(), scopes=['me'])):
+    return user_service.update_scope(user_auth.nickname, update_scope.scopes)

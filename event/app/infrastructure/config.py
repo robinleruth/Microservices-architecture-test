@@ -10,7 +10,8 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET', 'secret')
     SQL_URI = 'sqlite:///app.db'
     SCOPES = {
-
+        "me": "Read information about the current user.",
+        "event": "Has the opportunity to send event"
     }
     CLIENT_ID = 'event_service'
     BASEDIR = basedir

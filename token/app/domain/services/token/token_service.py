@@ -70,7 +70,6 @@ class TokenService:
         return self.user_info_by_token[name]
 
     def _add_to_dict(self, key, user: User):
-        key = self.PREFIX + key
         self.user_info_by_token[self.PREFIX + key] = user
 
     def create_access_token(self, username: str, credentials: Credentials, expires_delta: Optional[timedelta] = None,

@@ -16,7 +16,7 @@ class RedisTokenService(TokenService):
     keys: Set[str] = field(default_factory=set)
     user_info_by_token: redis.Redis = None
 
-    PREFIX = 'MODEL:'
+    PREFIX = 'TOKEN:'
 
     def __post_init__(self):
         super().__post_init__()
@@ -37,5 +37,4 @@ class RedisTokenService(TokenService):
                 self.user_info_by_token.delete(token)
 
     def _add_to_dict(self, key, user: User):
-        key = self.PREFIX + key
         self.user_info_by_token[self.PREFIX + key] = pickle.dumps(user)

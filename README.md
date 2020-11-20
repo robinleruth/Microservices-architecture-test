@@ -30,6 +30,15 @@ A subscriber registers itself in a SUBSCRIBERS Set in Redis. When it receives no
   * Uses a RPOPLPUSH atomatic operation to get event data from the Published List into the Processing list of corresponding event. It insures a lot of instances of subscribers can exist and be notified but only one actually processes the event
   * Once completed, the event data is removed from Processing list. If an error occurs, it stays there and can be retried later
   
+Events are stored in an append-only way. An aggregate ID is given, each event corresponding to this aggregate ID is given a hash and stored in redis, the hash is RPUSH to the corresponding aggregate list.
+
+In order to get all events for an aggregate -> the entire commit list can be retrieved using the Redis LRANGE command.
+List iterated through and HGET command issued to retrieve the data for each event.
+
+TODO : Ensures data is evenly spread across the Redis cluster using a CRC32 hash used for Event ID and modulo operation to partition the event data into multiple Redis Hashes.
+
+Redis stores small hashes in a more memory efficient way so it is better to have many small hashes than it is to have one large for each event store.
+  
 ## Common
 
 Common library for :

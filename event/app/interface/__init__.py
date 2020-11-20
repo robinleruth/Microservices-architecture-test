@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ..domain.services.event_service.bean import get_event_service
 from ..domain.services.event_store.bean import get_event_store
 
-api = FastAPI(title='Token API',
+api = FastAPI(title='Event API',
               description='',
               version='0.1')
 

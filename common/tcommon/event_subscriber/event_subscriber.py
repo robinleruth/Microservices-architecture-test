@@ -21,7 +21,7 @@ class EventSubscriber(metaclass=abc.ABCMeta):
     def __post_init__(self, redis_host: str, redis_port: int):
         def run():
             loop = asyncio.new_event_loop()
-            loop.run_until_complete(self.read_redis_message)
+            loop.run_until_complete(self.read_redis_message(redis_host, redis_port))
 
         if app_config is not TestConfig:
             logger.info(f'Launch thread for Event Subscriber for Channel {self.channel_name}')

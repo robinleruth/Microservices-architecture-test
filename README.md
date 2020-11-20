@@ -26,7 +26,7 @@ When an event is published :
 * Event data is LPUSH into a Published list for each subscriber for corresponding event
 * A notification event is published in an atomic operation. It notifies everyone in the Subscribers list for the corresponding event that an event is available in Published List
 
-A subscriber registers itself in a SUBSCRIBERS list in Redis. When it receives notification :
+A subscriber registers itself in a SUBSCRIBERS Set in Redis. When it receives notification :
   * Uses a RPOPLPUSH atomatic operation to get event data from the Published List into the Processing list of corresponding event. It insures a lot of instances of subscribers can exist and be notified but only one actually processes the event
   * Once completed, the event data is removed from Processing list. If an error occurs, it stays there and can be retried later
   
